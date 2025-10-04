@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "task_orchestrator": {
+      "command": "docker",
+      "args": ["exec", "-i", "task_orchestrator", "python", "/app/task_orchestrator.py"],
+      "alwaysAllow": ["get_next_task", "mark_task_complete"]
+    }
+  }
+}
