@@ -1,0 +1,25 @@
+stages:
+  - name: "stage 0"
+    steps:
+      - "Определи текущую оболочку (PowerShell или bash)"
+      - "Создай файл current_terminal.md с типом терминала"
+      - "Инициализируй git-репозиторий"
+      - "Создай currentStage.md с номером текущего этапа"
+      - "Создай currentStep.md со значением 0"
+
+  - name: "stage 1"
+    steps:
+      - "Создай структуру проекта по DDD: app/domain, application, infrastructure, entrypoint"
+      - "Создай класс Main, который пишет 'привет народ'"
+      - "Добавь в README правило: локальный запуск запрещен"
+      - "Создай project_todo.md со списком этапов и шагов"
+      - "Сделай git commit: структура и правила добавлены"
+
+  - name: "stage 2"
+    steps:
+      - "Добавь Dockerfile"
+      - "Добавь docker-compose.yml"
+      - "Создай start.sh и start.ps1 для запуска контейнера"
+      - "Запусти контейнер через скрипт и проверь логи"
+      - "Обнови README инструкцией запуска"
+      - "Сделай git commit после успешного запуска"
