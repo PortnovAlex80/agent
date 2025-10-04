@@ -1,3 +1,4 @@
 #!/bin/bash
 set -euo pipefail
-docker compose up -d
+docker compose down
+docker-compose up --build -d
