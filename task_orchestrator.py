@@ -84,6 +84,21 @@ def tool_mark_task_complete():
         save_index(idx + 1)
     return True, None
 
+def tool_reset_tasks():
+    """
+    Сбрасывает указатель на начало ТОЛЬКО если достигнут конец.
+    Возвращает (ok: bool, skipped: bool, err: str|None).
+    """
+    steps, err = try_load_steps()
+    if err is not None:
+        return False, False, err
+    idx = load_index()
+    if idx >= len(steps):
+        save_index(0)
+        return True, False, None
+    # ещё не дошли до конца — ничего не делаем
+    return False, True, None
+
 # ====== Диспетчер MCP ======
 
 def handle(req):
@@ -94,13 +109,13 @@ def handle(req):
     # --- MCP base: initialize ---
     # Клиент шлёт первым делом initialize; отвечаем версией протокола и возможностями.
     # Протоколная дата-версия «2024-11-05» используется в примерах SDK и совместима с клиентами.
-    # См. также концепт-спеки MCP (initialize/tools/list/tools/call). 
+    # См. также концепт-спеки MCP (initialize/tools/list/tools/call).
     if method == "initialize":
         return rpc_result(req_id, {
             "protocolVersion": "2024-11-05",
-            "serverInfo": {"name": "task_orchestrator", "version": "1.0.0"},
+            "serverInfo": {"name": "task_orchestrator", "version": "1.1.0"},
             "capabilities": {
-                "tools": {}  # объявляем, что у нас есть инструменты
+                "tools": {}
             }
         })
 
@@ -121,6 +136,15 @@ def handle(req):
                 {
                     "name": "mark_task_complete",
                     "description": "Advance the step pointer by one.",
+                    "inputSchema": {
+                        "type": "object",
+                        "properties": {},
+                        "required": []
+                    }
+                },
+                {
+                    "name": "reset_tasks",
+                    "description": "Reset step pointer to the beginning ONLY if the sequence is finished.",
                     "inputSchema": {
                         "type": "object",
                         "properties": {},
@@ -158,6 +182,17 @@ def handle(req):
                 "content": [{"type": "text", "text": "ok"}]
             })
 
+        if name == "reset_tasks":
+            ok, skipped, err = tool_reset_tasks()
+            if err:
+                return rpc_result(req_id, {
+                    "content": [{"type": "text", "text": ERR_STEPS}]
+                })
+            text = "ok" if ok else "skipped"
+            return rpc_result(req_id, {
+                "content": [{"type": "text", "text": text}]
+            })
+
         return rpc_error(req_id, -32601, f"Tool not found: {name}")
 
     # --- Поддержка прямых методов для ручного теста (необязательно для MCP) ---
@@ -166,11 +201,18 @@ def handle(req):
         if err:
             return rpc_error(req_id, -32000, ERR_STEPS)
         return rpc_result(req_id, {"task": task})
+
     if method == "mark_task_complete":
         ok, err = tool_mark_task_complete()
         if err:
             return rpc_error(req_id, -32000, ERR_STEPS)
         return rpc_result(req_id, {"status": "ok"})
+
+    if method == "reset_tasks":
+        ok, skipped, err = tool_reset_tasks()
+        if err:
+            return rpc_error(req_id, -32000, ERR_STEPS)
+        return rpc_result(req_id, {"status": "ok" if ok else "skipped"})
 
     # --- Неизвестный метод ---
     return rpc_error(req_id, -32601, f"Method not found: {method}")

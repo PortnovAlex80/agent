@@ -42,6 +42,8 @@ def test_steps():
     assert len(steps) > 0, "steps.yaml не содержит шагов"
     print(f"✅ Найдено {len(steps)} шагов")
 
+    first_step = steps[0]
+
     print("\n🧩 Тестирование task_orchestrator ...")
     for i, step in enumerate(steps):
         resp = call_task_orchestrator("get_next_task")
@@ -55,6 +57,21 @@ def test_steps():
     resp = call_task_orchestrator("get_next_task")
     assert resp["result"]["task"] is None, "❌ После последнего шага task должен быть null"
     print("\n🎉 Все шаги корректно прочитаны и завершены!")
+
+    # 🔁 Проверка сброса
+    print("\n🔁 Проверка reset_tasks (сброс к началу)...")
+    resp_reset = call_task_orchestrator("reset_tasks")
+    assert resp_reset and "result" in resp_reset, "❌ Нет ответа от reset_tasks"
+    status = resp_reset["result"].get("status")
+    assert status == "ok", f"❌ Ожидалось 'ok' от reset_tasks, получено '{status}'"
+    print("✓ Сброс выполнен: ok")
+
+    # Проверяем, что после сброса снова доступен первый шаг
+    resp2 = call_task_orchestrator("get_next_task")
+    assert resp2 and "result" in resp2, "❌ Нет ответа после reset_tasks"
+    current2 = resp2["result"]["task"]
+    assert current2 == first_step, f"❌ После сброса ожидался первый шаг '{first_step}', получено '{current2}'"
+    print(f"✅ После сброса первый шаг снова: {current2}")
 
 
 if __name__ == "__main__":
