@@ -1,9 +1,8 @@
 stages:
   - name: "stage 1"
     steps:
-      - "Вспомни что ты знаешь о Domain driven design и Hexagonal architecture. Stack - Python"
+      - "Вспомни что ты знаешь о Domain driven design и Hexagonal architecture. Stack - Python. Выпиши принципы и заверши шаг mark_task_complet"
       - "Определи тип терминала (PowerShell или bash), запиши этот факт в README"
-      - "Вспомни что ты знаешь о Domain driven design и Hexagonal architecture. Stack - Python"
       - "Инициализируй локальный Git-репозиторий (git init)"
       - "Создай структуру проекта по DDD в директории app (domain, application, infrastructure, entrypoint, ports)"
       - "Добавь пустые файлы с пометкой #reserved"
@@ -31,41 +30,77 @@ stages:
 
   - name: "stage 4"
     steps:
-      - "Настрой линтеры и форматтеры под стек Python (flake8, black)"
+      - "Настрой линтеры и форматтеры под стек Python (flake8, black) через dockerfile and docker-compose"
       - "Добавь конфигурационные файлы линтеров в репозиторий"
       - "Добавь сервис lint в docker-compose"
       - "Добавь make lint для запуска линтера в контейнере"
-      - "Убедись, что make lint проходит успешно"
+      - "Check that linting passes successfully inside Docker: docker-compose run --rm lint Сборка и запуск должны логировать в logPath, и выводить только 20 последних строк  Get-Content $logPath -Tail 20 при ошибке exit 1 и выводить сборка - запуск успешен если нет ошибок. docker-compose build *> $logPat. docker-compose up -d *>> $logPathif ($LASTEXITCODE -ne 0)  Write-Host `n❌ Docker up failed. Last 20 lines of log:`n Get-Content $logPath -Tail 20 exit 1. If it completes without errors, run start.ps1 to verify that the full application starts correctly."
       - "Сделай git commit после успешного прохождения lint"
 
   - name: "stage 5"
     steps:
+      - "изучи приложение, основные классы и dockerfile and start scripts. И заверши этот шаг mark_task_complet"
       - "Настрой централизованное логирование через stdout/stderr"
       - "Добавь уровни логов (INFO, DEBUG, ERROR)"
       - "Сделай логи структурированными (JSON или key=value)"
       - "Настрой управление уровнем логирования через переменные окружения"
-      - "Запусти контейнер и проверь логи"
+      - "Запусти контейнер start script and Сборка и запуск должны логировать в logPath, и выводить только 20 последних строк  Get-Content $logPath -Tail 20 при ошибке exit 1 и выводить сборка - запуск успешен если нет ошибок. docker-compose build *> $logPat. docker-compose up -d *>> $logPathif ($LASTEXITCODE -ne 0)  Write-Host `n❌ Docker up failed. Last 20 lines of log:`n Get-Content $logPath -Tail 20 exit 1 и проверь логи"
       - "Сделай git commit после успешной проверки логирования"
 
   - name: "stage 6"
     steps:
+      - "изучи приложение, основные классы и dockerfile and start scripts. И заверши этот шаг mark_task_complet"
       - "Подключи фреймворк тестирования (pytest)"
       - "Напиши тест, проверяющий, что главный класс пишет 'привет народ'"
       - "Добавь сервис test в docker-compose"
-      - "Добавь make test для запуска тестов"
-      - "Убедись, что make test проходит успешно в контейнере"
-      - "Сделай git commit после успешного прохождения тестов"
+      - "Добавь make test для запуска тестов make test в контейнере приложения"
+      - "Убедись, что make test проходит успешно в контейнере. запускай все через start scripts"
+      - "Сделай git commit после успешного прохождения тестов. тесты тоже должны запускать при старте приложения через  все через start scripts"
 
   - name: "stage 7"
     steps:
-      - "Настрой проверку зависимостей (Trivy или Snyk)"
-      - "Настрой secret scan (gitleaks или detect-secrets)"
-      - "Добавь make security для запуска проверок безопасности"
-      - "Убедись, что make lint, make test и make security проходят без ошибок"
-      - "Сделай git commit после успешных проверок безопасности"
+      - "Изучи приложение: структуру проекта, основные классы, Dockerfile и start-скрипты. Заверши этот шаг через mark_task_complete."
+      - "Проверь наличие и настрой проверку зависимостей (Trivy или Snyk):
+          • если цель make check-deps уже есть — пропусти,
+          • если отсутствует — добавь в Makefile команду docker run ... trivy fs ... > trivy-deps-report.json.
+        Заверши этот шаг через mark_task_complete."
+      - "Проверь наличие и настрой secret scan (Gitleaks или detect-secrets):
+          • если цель make secret-scan уже есть — пропусти,
+          • если отсутствует — добавь команду docker run ... zricethezav/gitleaks ... --report-path=gitleaks-report.json.
+        Заверши этот шаг через mark_task_complete."
+      - "Проверь наличие make security:
+          • если цель существует — пропусти,
+          • если нет — добавь в Makefile вызов $(MAKE) check-deps и $(MAKE) secret-scan.
+        Заверши этот шаг через mark_task_complete."
+      - "Создай или обнови start.ps1:
+          • установи `$logPath = 'docker.log'`
+          • выполни docker-compose build *> $logPath с проверкой $LASTEXITCODE
+          • при ошибке — вывести последние 20 строк (Get-Content $logPath -Tail 20) и exit 1
+          • при успехе — docker-compose up -d *>> $logPath с аналогичной проверкой
+          • если оба шага успешны — выведи 'Docker containers up successfully'
+        Заверши этот шаг через mark_task_complete."
+      - "Запусти внутри контейнера линтер:
+          docker-compose exec web make lint *>> docker.log
+          • при ошибке — вывести последние 20 строк docker.log и exit 1
+          • при успехе — вывести '✅ Lint passed' и завершить через mark_task_complete 'lint_success'."
+      - "Запусти тесты:
+          docker-compose exec web make test *>> docker.log
+          • при ошибке — вывести последние 20 строк docker.log и exit 1
+          • при успехе — вывести '✅ Tests passed' и завершить через mark_task_complete 'tests_success'."
+      - "Запусти проверки безопасности:
+          docker-compose exec web make security *>> docker.log
+          • при ошибке — вывести последние 20 строк docker.log и exit 1
+          • при успехе — вывести '✅ Security checks passed' и завершить через mark_task_complete 'security_success'."
+      - "Если все проверки успешны — сделай отдельные git-действия (без объединения в одну строку):
+          git add .
+          git commit -m 'Add security checks and start.ps1 verification'
+          git push
+        Заверши этот шаг через mark_task_complete 'commit_done'."
+
 
   - name: "stage 8"
     steps:
+      - "изучи приложение, основные классы и dockerfile and start scripts. И заверши этот шаг mark_task_complet"
       - "Добавь пустую БД PostgreSQL в docker-compose"
       - "Настрой инструмент миграций (Flyway, Alembic или Liquibase)"
       - "Создай первую пустую миграцию без таблиц"
@@ -78,6 +113,7 @@ stages:
 
   - name: "stage 9"
     steps:
+      - "изучи приложение, основные классы и dockerfile and start scripts. И заверши этот шаг mark_task_complet"
       - "Создай миграцию V9__create_user_and_access_tables.sql"
       - "Создай таблицу user с полями: user_id (UUID PK), chat_id (TEXT UNIQUE), display_name, is_active"
       - "Создай таблицу user_object_access с PK (user_id, object_id) и полями is_allowed"
