@@ -2,7 +2,8 @@ stages:
   - name: "stage 1"
     steps:
       - "Вспомни что ты знаешь о Domain driven design и Hexagonal architecture. Stack - Python"
-      - "Определи тип терминала (PowerShell или bash), запиши этот факт в README и project_resume.md"
+      - "Определи тип терминала (PowerShell или bash), запиши этот факт в README"
+      - "Вспомни что ты знаешь о Domain driven design и Hexagonal architecture. Stack - Python"
       - "Инициализируй локальный Git-репозиторий (git init)"
       - "Создай структуру проекта по DDD в директории app (domain, application, infrastructure, entrypoint, ports)"
       - "Добавь пустые файлы с пометкой #reserved"
