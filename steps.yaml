@@ -1,7 +1,7 @@
 stages:
   - name: "stage 1"
     steps:
-      - "Вспомни что ты знаешь о Domain driven design и Hexagonal architecture"
+      - "Вспомни что ты знаешь о Domain driven design и Hexagonal architecture. Stack - Python"
       - "Определи тип терминала (PowerShell или bash), запиши этот факт в README и project_resume.md"
       - "Инициализируй локальный Git-репозиторий (git init)"
       - "Создай структуру проекта по DDD в директории app (domain, application, infrastructure, entrypoint, ports)"
@@ -9,18 +9,15 @@ stages:
       - "Создай главный класс main, который пишет 'привет народ' в лог"
       - "Зафиксируй в README правило: локальный запуск и установка зависимостей запрещены — всё только через Docker"
       - "Выполни ревью кода, убедись что локальный запуск запрещён"
-      - "Создай или обнови agent_todo.md с шагами и критериями приёмки"
-      - "Создай project_resume.md и заполни сводку этапа 1"
       - "Сделай git commit: структура проекта и правила добавлены"
 
   - name: "stage 2"
     steps:
-      - "Добавь Dockerfile"
+      - "Создай Dockerfile"
       - "Добавь docker-compose.yml"
-      - "Создай скрипты запуска и остановки: start.sh (Linux/Mac) и start.ps1 (Windows PowerShell)"
+      - "Создай скрипты запуска и остановки: start.sh (Linux/Mac) и start.ps1 (Windows PowerShell). Сборка и запуск должны логировать в logPath, и выводить только 20 последних строк  Get-Content $logPath -Tail 20 при ошибке exit 1 и выводить сборка - запуск успешен если нет ошибок. docker-compose build *> $logPat. docker-compose up -d *>> $logPathif ($LASTEXITCODE -ne 0)  Write-Host "`n❌ Docker up failed. Last 20 lines of log:`n Get-Content $logPath -Tail 20 exit 1"
       - "Обнови README инструкцией по запуску контейнера"
-      - "Запусти контейнер через скрипт и проверь логи — в логах должно быть 'привет народ'"
-      - "Обнови project_resume.md"
+      - "Запусти контейнер нашего приложения через скрипт и проверь логи — в логах должно быть 'привет народ'"
       - "Сделай git commit после успешного запуска контейнера"
 
   - name: "stage 3"
@@ -29,7 +26,6 @@ stages:
       - "Настрой загрузку конфигов (PORT, LOG_LEVEL и т.п.)"
       - "Обнови README примером .env"
       - "Проверь, что приложение читает переменные окружения при запуске контейнера"
-      - "Обнови project_resume.md"
       - "Сделай git commit после успешного теста конфигурации"
 
   - name: "stage 4"
@@ -39,7 +35,6 @@ stages:
       - "Добавь сервис lint в docker-compose"
       - "Добавь make lint для запуска линтера в контейнере"
       - "Убедись, что make lint проходит успешно"
-      - "Обнови project_resume.md"
       - "Сделай git commit после успешного прохождения lint"
 
   - name: "stage 5"
@@ -49,7 +44,6 @@ stages:
       - "Сделай логи структурированными (JSON или key=value)"
       - "Настрой управление уровнем логирования через переменные окружения"
       - "Запусти контейнер и проверь логи"
-      - "Обнови project_resume.md"
       - "Сделай git commit после успешной проверки логирования"
 
   - name: "stage 6"
@@ -59,7 +53,6 @@ stages:
       - "Добавь сервис test в docker-compose"
       - "Добавь make test для запуска тестов"
       - "Убедись, что make test проходит успешно в контейнере"
-      - "Обнови project_resume.md"
       - "Сделай git commit после успешного прохождения тестов"
 
   - name: "stage 7"
@@ -68,7 +61,6 @@ stages:
       - "Настрой secret scan (gitleaks или detect-secrets)"
       - "Добавь make security для запуска проверок безопасности"
       - "Убедись, что make lint, make test и make security проходят без ошибок"
-      - "Обнови project_resume.md"
       - "Сделай git commit после успешных проверок безопасности"
 
   - name: "stage 8"
@@ -81,7 +73,6 @@ stages:
       - "Добавь интеграционный тест для проверки подключения"
       - "Настрой приложение: при старте проверяй подключение к БД и логируй статус"
       - "Запусти контейнер и проверь соединение"
-      - "Обнови project_resume.md"
       - "Сделай git commit после успешного теста подключения"
 
   - name: "stage 9"
