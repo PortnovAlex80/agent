@@ -15,7 +15,7 @@ stages:
     steps:
       - "Создай Dockerfile"
       - "Добавь docker-compose.yml"
-      - "Создай скрипты запуска и остановки: start.sh (Linux/Mac) и start.ps1 (Windows PowerShell). Сборка и запуск должны логировать в logPath, и выводить только 20 последних строк  Get-Content $logPath -Tail 20 при ошибке exit 1 и выводить сборка - запуск успешен если нет ошибок. docker-compose build *> $logPat. docker-compose up -d *>> $logPathif ($LASTEXITCODE -ne 0)  Write-Host "`n❌ Docker up failed. Last 20 lines of log:`n Get-Content $logPath -Tail 20 exit 1"
+      - "Создай скрипты запуска и остановки: start.sh (Linux/Mac) и start.ps1 (Windows PowerShell). Сборка и запуск должны логировать в logPath, и выводить только 20 последних строк  Get-Content $logPath -Tail 20 при ошибке exit 1 и выводить сборка - запуск успешен если нет ошибок. docker-compose build *> $logPat. docker-compose up -d *>> $logPathif ($LASTEXITCODE -ne 0)  Write-Host `n❌ Docker up failed. Last 20 lines of log:`n Get-Content $logPath -Tail 20 exit 1"
       - "Обнови README инструкцией по запуску контейнера"
       - "Запусти контейнер нашего приложения через скрипт и проверь логи — в логах должно быть 'привет народ'"
       - "Сделай git commit после успешного запуска контейнера"
