@@ -1,22 +1,296 @@
 stages:
-  - name: "stage 0"
-    steps:
-      - "Определи текущую оболочку (PowerShell или bash)"
-      - "Создай файл current_terminal.md с типом терминала"
-      - "Инициализируй git-репозиторий"
-
   - name: "stage 1"
     steps:
-      - "Создай структуру проекта по DDD: app/domain, application, infrastructure, entrypoint"
-      - "Создай класс Main, который пишет 'привет народ'"
-      - "Добавь в README правило: локальный запуск запрещен"
-      - "Сделай git commit: структура и правила добавлены"
+      - "Вспомни что ты знаешь о Domain driven design и Hexagonal architecture"
+      - "Определи тип терминала (PowerShell или bash), запиши этот факт в README и project_resume.md"
+      - "Инициализируй локальный Git-репозиторий (git init)"
+      - "Создай структуру проекта по DDD в директории app (domain, application, infrastructure, entrypoint, ports)"
+      - "Добавь пустые файлы с пометкой #reserved"
+      - "Создай главный класс main, который пишет 'привет народ' в лог"
+      - "Зафиксируй в README правило: локальный запуск и установка зависимостей запрещены — всё только через Docker"
+      - "Выполни ревью кода, убедись что локальный запуск запрещён"
+      - "Создай или обнови agent_todo.md с шагами и критериями приёмки"
+      - "Создай project_resume.md и заполни сводку этапа 1"
+      - "Сделай git commit: структура проекта и правила добавлены"
 
   - name: "stage 2"
     steps:
       - "Добавь Dockerfile"
       - "Добавь docker-compose.yml"
-      - "Создай start.sh и start.ps1 для запуска контейнера"
-      - "Запусти контейнер через скрипт и проверь логи"
-      - "Обнови README инструкцией запуска"
-      - "Сделай git commit после успешного запуска"
+      - "Создай скрипты запуска и остановки: start.sh (Linux/Mac) и start.ps1 (Windows PowerShell)"
+      - "Обнови README инструкцией по запуску контейнера"
+      - "Запусти контейнер через скрипт и проверь логи — в логах должно быть 'привет народ'"
+      - "Обнови project_resume.md"
+      - "Сделай git commit после успешного запуска контейнера"
+
+  - name: "stage 3"
+    steps:
+      - "Добавь поддержку .env и переменных окружения"
+      - "Настрой загрузку конфигов (PORT, LOG_LEVEL и т.п.)"
+      - "Обнови README примером .env"
+      - "Проверь, что приложение читает переменные окружения при запуске контейнера"
+      - "Обнови project_resume.md"
+      - "Сделай git commit после успешного теста конфигурации"
+
+  - name: "stage 4"
+    steps:
+      - "Настрой линтеры и форматтеры под стек Python (flake8, black)"
+      - "Добавь конфигурационные файлы линтеров в репозиторий"
+      - "Добавь сервис lint в docker-compose"
+      - "Добавь make lint для запуска линтера в контейнере"
+      - "Убедись, что make lint проходит успешно"
+      - "Обнови project_resume.md"
+      - "Сделай git commit после успешного прохождения lint"
+
+  - name: "stage 5"
+    steps:
+      - "Настрой централизованное логирование через stdout/stderr"
+      - "Добавь уровни логов (INFO, DEBUG, ERROR)"
+      - "Сделай логи структурированными (JSON или key=value)"
+      - "Настрой управление уровнем логирования через переменные окружения"
+      - "Запусти контейнер и проверь логи"
+      - "Обнови project_resume.md"
+      - "Сделай git commit после успешной проверки логирования"
+
+  - name: "stage 6"
+    steps:
+      - "Подключи фреймворк тестирования (pytest)"
+      - "Напиши тест, проверяющий, что главный класс пишет 'привет народ'"
+      - "Добавь сервис test в docker-compose"
+      - "Добавь make test для запуска тестов"
+      - "Убедись, что make test проходит успешно в контейнере"
+      - "Обнови project_resume.md"
+      - "Сделай git commit после успешного прохождения тестов"
+
+  - name: "stage 7"
+    steps:
+      - "Настрой проверку зависимостей (Trivy или Snyk)"
+      - "Настрой secret scan (gitleaks или detect-secrets)"
+      - "Добавь make security для запуска проверок безопасности"
+      - "Убедись, что make lint, make test и make security проходят без ошибок"
+      - "Обнови project_resume.md"
+      - "Сделай git commit после успешных проверок безопасности"
+
+  - name: "stage 8"
+    steps:
+      - "Добавь пустую БД PostgreSQL в docker-compose"
+      - "Настрой инструмент миграций (Flyway, Alembic или Liquibase)"
+      - "Создай первую пустую миграцию без таблиц"
+      - "Добавь сервис db-migrate в docker-compose"
+      - "Подключи testcontainers для PostgreSQL"
+      - "Добавь интеграционный тест для проверки подключения"
+      - "Настрой приложение: при старте проверяй подключение к БД и логируй статус"
+      - "Запусти контейнер и проверь соединение"
+      - "Обнови project_resume.md"
+      - "Сделай git commit после успешного теста подключения"
+
+  - name: "stage 9"
+    steps:
+      - "Создай миграцию V9__create_user_and_access_tables.sql"
+      - "Создай таблицу user с полями: user_id (UUID PK), chat_id (TEXT UNIQUE), display_name, is_active"
+      - "Создай таблицу user_object_access с PK (user_id, object_id) и полями is_allowed"
+      - "Добавь индекс idx_user_chat_id"
+      - "Добавь интеграционный тест на создание пользователя и уникальность chat_id"
+      - "Проверь успешное применение миграции и целостность FK"
+      - "Сделай git commit: миграция пользователей и доступа добавлена"
+
+  - name: "stage 10"
+    steps:
+      - "Создай миграцию V10__create_object_and_alias.sql"
+      - "Создай таблицу object: object_id (UUID PK), code (TEXT UNIQUE), city, address, description, search_blob, is_active"
+      - "Создай таблицу object_alias: alias_id (UUID PK), object_id (FK), alias_text (TEXT UNIQUE в паре с object_id)"
+      - "Добавь полнотекстовый индекс to_tsvector('russian', search_blob)"
+      - "Добавь тест поиска по коду и адресу"
+      - "Проверь успешное применение миграции и корректный поиск"
+      - "Сделай git commit: справочник объектов готов"
+
+  - name: "stage 11"
+    steps:
+      - "Создай миграцию V11__create_document_type_and_file_format.sql"
+      - "Создай таблицу document_type с doc_type (PK), title_ru, path_code, is_active"
+      - "Добавь таблицу file_format: format_id (UUID PK), ext, mime, is_supported, notes"
+      - "Вставь предустановленные значения для типов документов (ACT, LET, DWG, PHO)"
+      - "Вставь поддерживаемые форматы: pdf, jpg, jpeg, png, heic, docx, xlsx, txt"
+      - "Проверь наличие справочников после миграции"
+      - "Сделай git commit: справочники типов и форматов готовы"
+
+  - name: "stage 12"
+    steps:
+      - "Создай миграцию V12__create_batch_table.sql"
+      - "Создай таблицу batch с PK batch_id, FK user_id, selected_doc_type, selected_object_id"
+      - "Добавь поля created_at, status, files_count_total, files_count_supported, files_count_unsupported, total_size_bytes"
+      - "Добавь report_sample_names (JSONB), report_final_path, sorted_date, last_error_reason"
+      - "Создай индекс idx_batch_user_status (user_id, status)"
+      - "Проверь миграцию, FK и индекс"
+      - "Сделай git commit: таблица batch готова"
+
+  - name: "stage 13"
+    steps:
+      - "Создай миграцию V13__create_batch_file.sql"
+      - "Создай таблицу batch_file с PK file_id и FK batch_id"
+      - "Добавь поля original_name, size_bytes, ext_original, ext_normalized, mime_detected, is_supported"
+      - "Добавь checksum_sha256, is_duplicate_in_batch, duplicate_of_file_id, temp_path, temp_expires_at"
+      - "Добавь поля антивируса: antivirus_enabled, antivirus_status, antivirus_engine, antivirus_signature"
+      - "Добавь индекс idx_batchfile_checksum (unique (batch_id, checksum_sha256))"
+      - "Проверь дедупликацию и миграцию"
+      - "Сделай git commit: таблица batch_file готова"
+
+  - name: "stage 14"
+    steps:
+      - "Создай миграцию V14__create_sort_job.sql"
+      - "Создай таблицу sort_job с PK job_id и FK batch_id"
+      - "Добавь поля started_at, finished_at, status, attempt, error_summary"
+      - "Добавь индекс idx_sort_job_batch_status (batch_id, status)"
+      - "Проверь миграцию и валидность FK"
+      - "Сделай git commit: таблица sort_job готова"
+
+  - name: "stage 15"
+    steps:
+      - "Создай миграцию V15__create_sorted_file.sql"
+      - "Создай таблицу sorted_file с PK sorted_file_id, FK job_id, FK file_id"
+      - "Добавь sequence_number, final_dir_path, final_filename, final_full_path"
+      - "Добавь write_attempts, write_status, write_error_reason, name_conflict_resolved, committed_at"
+      - "Добавь уникальное ограничение на (batch_id, sequence_number)"
+      - "Проверь миграцию и уникальность имён"
+      - "Сделай git commit: таблица sorted_file готова"
+
+  - name: "stage 16"
+    steps:
+      - "Создай миграцию V16__create_audit_and_metrics.sql"
+      - "Создай таблицу audit_event: event_id (UUID PK), ts, level, event_type, user_id, batch_id, file_id, job_id, meta (JSONB)"
+      - "Создай таблицу metrics_daily: metrics_date (PK), daily_active_users, files_ingested_total, files_sorted_total и остальные поля метрик"
+      - "Добавь индексы по audit_event (ts, event_type) и metrics_daily (metrics_date)"
+      - "Проверь миграцию и целостность данных"
+      - "Сделай git commit: аудит и метрики готовы"
+
+  - name: "stage 17"
+    steps:
+      - "Убедись, что каталог migrations содержит все файлы от V8 до V17"
+      - "Проверь наличие миграций V8–V17 в правильном порядке"
+      - "В файле V17__final_integrity_and_indexes.sql добавь все FK, индексы и представление v_batch_summary"
+      - "Создай smoke-тест scripts/test_db_schema.sh для проверки миграций"
+      - "Запусти make db-reset && make db-migrate"
+      - "Запусти make lint && make test && make security-check"
+      - "Выполни ./scripts/test_db_schema.sh и проверь код возврата 0"
+      - "Сгенерируй дамп схемы: pg_dump --schema-only --no-owner --file=docs/schema_snapshot.sql"
+      - "Сделай git commit: схема БД финализирована"
+
+  - name: "stage 18"
+    steps:
+      - "Обнови README.md, добавь раздел Database Schema"
+      - "Обнови project_resume.md — опиши этапы 9–17"
+      - "Сгенерируй ER-диаграмму (pgModeler/dbdiagram.io)"
+      - "Добавь schema_snapshot.sql в docs/"
+      - "Проверь актуальность всех ссылок и полей"
+      - "Сделай git commit: документация по БД завершена"
+
+  - name: "stage 19"
+    steps:
+      - "Обнови README.md: структура проекта, команды запуска, тестов, линтера и security"
+      - "Добавь пример .env в README"
+      - "Запусти контейнер через скрипт и убедись, что приложение стартует"
+      - "Обнови project_resume.md"
+      - "После успешного запуска и прохождения lint/test выполни git add/commit. Если неуспех — исправь"
+      - "Останови приложение через скрипт"
+
+  - name: "stage 20"
+    steps:
+      - "Расширь доменную модель для UC: добавь value objects: FileChecksum(SHA-256), FileSizeBytes, MimeType, FileExtension, ObjectCode, DocTypeCode, AlmatyDate (TZ=Asia/Almaty), SequenceNumber, DirectoryPath, FinalFileName"
+      - "Добавь доменные события: FilesAccepted, UnsupportedFilesFound, BatchFormed, DocumentTypeSelected, ObjectSelected, SortJobStarted, FileWritten, TempDeleted, SortCompleted, SortPartial, SortFailed"
+      - "Добавь доменные политики/сервисы: LimitsPolicy(≤200 файлов, ≤250MB/файл, ≤2GB суммарно), DeduplicationService(по SHA-256), AntivirusPolicy(включаемо), NamingPolicy(правила имени/пути), ObjectSearchRanking(топ-5)"
+      - "Определи агрегаты и инварианты: Batch управляет жизненным циклом и приёмом, SortJob управляет сортировкой; BatchFile не меняет агрегат, но подчинён Batch; SortedFile подчинён SortJob"
+      - "Определи интерфейсы репозиториев (domain): BatchRepository, BatchFileRepository, SortJobRepository, SortedFileRepository, ObjectRepository, DocumentTypeRepository, FileFormatRepository, AuditEventRepository"
+      - "Покрой чисто доменными unit-тестами политику лимитов, дедупликацию, генерацию имени и статусы пакета"
+      - "Обнови project_resume.md (домен расширен для UC) и сделай git commit"
+
+  - name: "stage 21"
+    steps:
+      - "Определи порты (app/ports): ChatPort, ObjectDirectoryPort, FileFormatPort, ChecksumPort, AntivirusPort, ExifPort, TempStoragePort, FinalFsPort, ClockPort, TxManagerPort, MetricsPort, AuditPort, LoggerPort"
+      - "Создай DTO/команды/ответы для UC: AcceptFilesCommand, AcceptFilesResult, SelectDocTypeCommand, SelectObjectCommand, SearchObjectsQuery, SortAndLayoutCommand, SortAndLayoutResult"
+      - "Добавь базовые адаптеры-заглушки в infrastructure для тестов: StubChatPort, StubObjectDirectoryPort, StubAntivirusPort, StubExifPort, InMemoryTempStoragePort, FakeFinalFsPort, SystemClockPort(Asia/Almaty)"
+      - "Реализуй Postgres-репозитории (infrastructure/db) для Batch, BatchFile, SortJob, SortedFile, Object, DocumentType, FileFormat, AuditEvent"
+      - "Добавь транзакционный декоратор ApplicationService (через TxManagerPort) и обработку доменных событий → AuditPort/MetricsPort"
+      - "Обнови project_resume.md и сделай git commit"
+
+  - name: "stage 22"
+    steps:
+      - "UC-1 Приём документов: реализуй AcceptFilesUseCase (application) — принимает порции файлов, открывает/получает активный Batch пользователя, записывает BatchFile, применяет FileFormatPort (MIME+ext)"
+      - "Внедри LimitsPolicy и DeduplicationService: при превышении лимитов возвращай код ошибки и список нарушений; дубликаты помечай is_duplicate_in_batch=true без повторной обработки"
+      - "Формируй списки поддерживаемых/неподдерживаемых файлов; публикуй события UnsupportedFilesFound и FilesAccepted → AuditPort/MetricsPort"
+      - "Если после приёма есть ≥1 поддерживаемый файл — переводи Batch.status=FORMED; иначе верни сообщение A1 и не переводь статус"
+      - "Сконфигурируй ChatPort сообщения: 'Принял N файлов', список неподдерживаемых; адаптер не читает контент, только метаданные"
+      - "Добавь интеграционные тесты: A1 (0 поддерживаемых), A2 (превышение лимитов), happy-path с порциями; проверь записи в БД и события аудита"
+      - "Обнови project_resume.md и сделай git commit"
+
+  - name: "stage 23"
+    steps:
+      - "UC-2 Выбор типа документов: реализуй SelectDocTypeUseCase — валидируй doc_type по справочнику DocumentType, установи Batch.selected_doc_type, статус TYPE_SELECTED"
+      - "Сделай идемпотентность: повторный выбор того же типа не меняет состояние и возвращает OK"
+      - "ChatPort: 'Доступные типы…', 'Не понял выбор…' — вынеси шаблоны в i18n/messages.json"
+      - "Тесты: успешный выбор типа, выбор несуществующего варианта (A2), отсутствие активного пакета"
+      - "Обнови project_resume.md и сделай git commit"
+
+  - name: "stage 24"
+    steps:
+      - "UC-3 Выбор объекта: реализуй SearchObjectsUseCase (query) — ObjectDirectoryPort ищет по коду/адресу, ранжирует через ObjectSearchRanking, отдаёт до 5 совпадений"
+      - "Реализуй SelectObjectUseCase — фиксирует выбранный объект в Batch.selected_object_id, переводит статус OBJECT_SELECTED; при пустом результате верни A1 с инструкциями"
+      - "Учти доступ: если включён белый список — проверяй UserObjectAccess перед установкой объекта"
+      - "Тесты: найденные совпадения, ничего не найдено (подсказки), объект вне доступа"
+      - "Обнови project_resume.md и сделай git commit"
+
+  - name: "stage 25"
+    steps:
+      - "Реализуй NamingPolicy и PathBuilder как доменные сервисы: правила каталога /srv/docs/<код>/<тип>/<YYYY>/<MM>/ и имени <код>_<тип>_<YYYYMMDD>_<NN>.<ext>"
+      - "Добавь генератор SequenceNumberProvider для уникальных номеров в рамках (batch_id, doc_type, object_id, sorted_date)"
+      - "ClockPort (Asia/Almaty) для AlmatyDate в имени; нормализация расширений в нижний регистр"
+      - "Тесты на генерацию: примеры из ТЗ (LET/DWG/ACT/PHO), проверка коллизий и автоинкремента"
+      - "Обнови project_resume.md и сделай git commit"
+
+  - name: "stage 26"
+    steps:
+      - "UC-4 Автосортировка: реализуй SortAndLayoutUseCase — создаёт SortJob(RUNNING), для каждого уникального BatchFile готовит SortedFile с sequence_number и final_full_path"
+      - "FinalFsPort: запись с ретраями до 3 раз; при конфликте имени — инкремент sequence_number до свободного значения"
+      - "TempStoragePort: по успеху удаляй временные копии и публикуй TempDeleted; по сбое назначай TTL=60 минут"
+      - "Ошибки: при частичном успехе пометь SortJob.status=PARTIAL, при полном провале — FAILED; по удаче — SUCCEEDED и Batch.status=DONE"
+      - "ChatPort: 'Начинаю раскладку N файлов…', 'Готово: X/Y… Путь: … Временные копии удалены'"
+      - "Интеграционные тесты: успешная раскладка, ретраи записи, конфликт имён, частичный успех; верификация финальных имён и путей"
+      - "Обнови project_resume.md и сделай git commit"
+
+  - name: "stage 27"
+    steps:
+      - "Интегрируй опциональные шаги обработки файлов: AntivirusPort (CLEAN/INFECTED/ERROR), ExifPort (автоповорот фото без потери качества)"
+      - "Добавь флаги включения через конфиг: ANTIVIRUS_ENABLED, EXIF_AUTOROTATE"
+      - "Учти задержку 1–2 сек/файл при включённом антивирусе; метрики сортировки p50/p95 отражают дополнительную латентность"
+      - "Тесты: заражённые файлы исключаются из раскладки и попадают в отчёт; автоповорот не меняет расширение"
+      - "Обнови project_resume.md и сделай git commit"
+
+  - name: "stage 28"
+    steps:
+      - "Собери конвейер сообщений бота: маппинг доменных событий → текстовые шаблоны из ТЗ (приём, повтор типа, запрос объекта, готово, сбой, лимиты, неподдерживаемые)"
+      - "Добавь MessageFormatter с подстановками примеров имён и путей; обеспечь локаль ru-RU"
+      - "E2E тесты сценариев диалога: повтор запроса при неверном вводе (A1/A2), корректные подсказки и подтверждения"
+      - "Обнови project_resume.md и сделай git commit"
+
+  - name: "stage 29"
+    steps:
+      - "Создай каталог для E2E: tests/e2e/{data,sql,fixtures,scenarios,artifacts}"
+      - "Добавь Makefile-цели: make e2e-up, make e2e-test, make e2e-down, make e2e-report (все запускаются ТОЛЬКО в контейнерах)"
+      - "Добавь docker-compose.e2e.yml со службами: app, postgres, e2e-test (pytest), volume для tests/e2e/artifacts"
+      - "Зафиксируй детерминированную дату/часовой пояс: переменные E2E_FIXED_DATE=2025-10-05, TZ=Asia/Almaty в .env.e2e"
+      - "Подготовь сиды БД: tests/e2e/sql/seed.sql (INSERT для object: O-ALM-AB25; алиас 'Абылай 25'; document_type и file_format уже создаются миграциями)"
+      - "Добавь фикстуры pytest: tests/e2e/fixtures/conftest.py — фикстуры compose_db (миграции+seed), chat_port_stub (сохраняет сообщения в artifacts/chat_log.json), clock_fixed (E2E_FIXED_DATE), fs_mock (каталог /srv/docs смонтирован в volume)"
+      - "Сгенерируй тестовые файлы в контейнере (без локального запуска): tests/e2e/data/generate_dataset.py — создаёт 12 файлов: 9 поддерживаемых (pdf, jpg, jpeg, png, heic, docx, xlsx, txt, png), 2 дубликата по содержимому (для дедупа), 1 неподдерживаемый archive.zip"
+      - "Добавь общий сценарный помощник: tests/e2e/scenarios/helpers.py — функции send_files_to_chat(), select_doc_type('LET'), search_object('Абылай 25'), pick_object('O-ALM-AB25'), trigger_sort_and_wait(), assert_final_names_and_paths()"
+      - "Сценарий 1 (happy-path): tests/e2e/scenarios/test_uc_e2e_s1_happy_path.py — приём 12 файлов (1 неподдерживаемый), выбор LET, поиск 'Абылай 25' → выбор O-ALM-AB25, раскладка, отчёт. Проверь: /srv/docs/O-ALM-AB25/LET/2025/10/ и имена O-ALM-AB25_LET_20251005_01.pdf и далее"
+      - "Сценарий 2 (0 поддерживаемых): tests/e2e/scenarios/test_uc_e2e_s2_no_supported.py — отправь только неподдерживаемые/пустые; проверь сообщение 'Ни одного поддерживаемого файла' и отсутствие перехода batch в статус FORMED"
+      - "Сценарий 3 (превышение лимитов): tests/e2e/scenarios/test_uc_e2e_s3_limits.py — создай >200 файлов или суммарно >2 ГБ; проверь ответ о лимитах и отсутствие формирования пакета"
+      - "Сценарий 4 (объект не найден дважды): tests/e2e/scenarios/test_uc_e2e_s4_object_not_found.py — поисковая строка без совпадений, повтор; проверь текст с инструкцией обратиться к администратору"
+      - "Сценарий 5 (конфликт имён и ретраи): tests/e2e/scenarios/test_uc_e2e_s5_name_conflict_and_retries.py — предварительно создай файл с именем _01; проверь автоинкремент до ближайшего свободного номера и запись с ≤3 ретраями"
+      - "Проверка аудита и метрик: tests/e2e/scenarios/test_uc_e2e_audit_metrics.py — проверь, что в audit_event есть: INGEST_RECEIVED, UNSUPPORTED_FOUND, TYPE_SELECTED, OBJECT_SELECTED, SORT_STARTED, FILE_WRITTEN, TEMP_DELETED, JOB_SUCCEEDED/PARTIAL; в metrics_daily обновлены files_ingested_total, files_sorted_total, p50/p95"
+      - "Обнови ChatPort-адаптер: infrastructure/entrypoint/chat_port_stub.py — логируй все отправленные фразы из ТЗ в tests/e2e/artifacts/chat_log.json и в stdout контейнера"
+      - "Добавь цели Makefile: e2e-up (docker compose -f docker-compose.e2e.yml up -d), e2e-test (pytest -q tests/e2e/scenarios -k 'e2e' --junitxml=tests/e2e/artifacts/junit.xml), e2e-report (собери сводный JSON отчет), e2e-down (docker compose -f docker-compose.e2e.yml down -v)"
+      - "Запусти последовательность: make e2e-up → make db-migrate (в контейнере) → применить tests/e2e/sql/seed.sql → make e2e-test → make e2e-report"
+      - "Проверь артефакты: tests/e2e/artifacts/junit.xml, chat_log.json, final_paths.json, audit_dump.json, metrics_snapshot.json"
+      - "Обнови project_resume.md: раздел 'UC E2E — результаты и логи', приложи ссылки на артефакты"
+      - "Сделай git add и git commit с сообщением 'E2E UC (S1–S5) + аудиты/метрики: тесты пройдены'"
+

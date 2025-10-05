@@ -86,18 +86,15 @@ def tool_mark_task_complete():
 
 def tool_reset_tasks():
     """
-    Сбрасывает указатель на начало ТОЛЬКО если достигнут конец.
+    Теперь всегда сбрасывает указатель на начало.
     Возвращает (ok: bool, skipped: bool, err: str|None).
+    skipped теперь всегда False, потому что сброс всегда выполняется.
     """
     steps, err = try_load_steps()
     if err is not None:
         return False, False, err
-    idx = load_index()
-    if idx >= len(steps):
-        save_index(0)
-        return True, False, None
-    # ещё не дошли до конца — ничего не делаем
-    return False, True, None
+    save_index(0)
+    return True, False, None
 
 # ====== Диспетчер MCP ======
 
