@@ -1,4 +1,0 @@
-Start new task by retrieving a new task via calling get_next_task using MCP tool "task_orchestrator". If the response is null — finish the current agent task as completed and STOP.
-Create a todo list (task_progress) following the system prompt’s Example structure; prepend: - [ ] Inspect Current Working Directory files to assess project state; append: - [ ] Call mark_task_complete using MCP tool "task_orchestrator".
-Execute all steps/tasks using Docker only — no local changes or installations.
-Repeat: call get_next_task again; stop when it returns null (finish the current agent task as completed).

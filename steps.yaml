@@ -1,7 +1,7 @@
-stages:
+﻿stages:
   - name: "stage 1"
     steps:
-      - "Вспомни что ты знаешь о Domain driven design и Hexagonal architecture. Stack - Python. Выпиши принципы и заверши шаг mark_task_complet"
+      - "Вспомни что ты знаешь о Domain driven design и Hexagonal architecture. Stack - Python. Выпиши принципы в README и заверши шаг вызовом mark_step_complete"
       - "Определи тип терминала (PowerShell или bash), запиши этот факт в README"
       - "Инициализируй локальный Git-репозиторий (git init)"
       - "Создай структуру проекта по DDD в директории app (domain, application, infrastructure, entrypoint, ports)"
@@ -59,43 +59,43 @@ stages:
 
   - name: "stage 7"
     steps:
-      - "Изучи приложение: структуру проекта, основные классы, Dockerfile и start-скрипты. Заверши этот шаг через mark_task_complete."
+      - "Изучи приложение: структуру проекта, основные классы, Dockerfile и start-скрипты. Заверши этот шаг через mark_step_complete."
       - "Проверь наличие и настрой проверку зависимостей (Trivy или Snyk):
           • если цель make check-deps уже есть — пропусти,
           • если отсутствует — добавь в Makefile команду docker run ... trivy fs ... > trivy-deps-report.json.
-        Заверши этот шаг через mark_task_complete."
+        Заверши этот шаг через mark_step_complete."
       - "Проверь наличие и настрой secret scan (Gitleaks или detect-secrets):
           • если цель make secret-scan уже есть — пропусти,
           • если отсутствует — добавь команду docker run ... zricethezav/gitleaks ... --report-path=gitleaks-report.json.
-        Заверши этот шаг через mark_task_complete."
+        Заверши этот шаг через mark_step_complete."
       - "Проверь наличие make security:
           • если цель существует — пропусти,
           • если нет — добавь в Makefile вызов $(MAKE) check-deps и $(MAKE) secret-scan.
-        Заверши этот шаг через mark_task_complete."
+        Заверши этот шаг через mark_step_complete."
       - "Создай или обнови start.ps1:
           • установи `$logPath = 'docker.log'`
           • выполни docker-compose build *> $logPath с проверкой $LASTEXITCODE
           • при ошибке — вывести последние 20 строк (Get-Content $logPath -Tail 20) и exit 1
           • при успехе — docker-compose up -d *>> $logPath с аналогичной проверкой
           • если оба шага успешны — выведи 'Docker containers up successfully'
-        Заверши этот шаг через mark_task_complete."
+        Заверши этот шаг через mark_step_complete."
       - "Запусти внутри контейнера линтер:
           docker-compose exec web make lint *>> docker.log
           • при ошибке — вывести последние 20 строк docker.log и exit 1
-          • при успехе — вывести '✅ Lint passed' и завершить через mark_task_complete 'lint_success'."
+          • при успехе — вывести '✅ Lint passed' и завершить через mark_step_complete 'lint_success'."
       - "Запусти тесты:
           docker-compose exec web make test *>> docker.log
           • при ошибке — вывести последние 20 строк docker.log и exit 1
-          • при успехе — вывести '✅ Tests passed' и завершить через mark_task_complete 'tests_success'."
+          • при успехе — вывести '✅ Tests passed' и завершить через mark_step_complete 'tests_success'."
       - "Запусти проверки безопасности:
           docker-compose exec web make security *>> docker.log
           • при ошибке — вывести последние 20 строк docker.log и exit 1
-          • при успехе — вывести '✅ Security checks passed' и завершить через mark_task_complete 'security_success'."
+          • при успехе — вывести '✅ Security checks passed' и завершить через mark_step_complete 'security_success'."
       - "Если все проверки успешны — сделай отдельные git-действия (без объединения в одну строку):
           git add .
           git commit -m 'Add security checks and start.ps1 verification'
           git push
-        Заверши этот шаг через mark_task_complete 'commit_done'."
+        Заверши этот шаг через mark_step_complete 'commit_done'."
 
 
   - name: "stage 8"

@@ -8,7 +8,6 @@ import yaml
 STEPS_FILE = "steps.yaml"
 INDEX_FILE = ".step_index"
 
-# Единое сообщение об ошибке для шагов (по контракту)
 ERR_STEPS = "steps.yaml not found or invalid"
 
 # ====== Утилиты ======
@@ -54,7 +53,6 @@ def save_index(i):
         with open(INDEX_FILE, "w", encoding="utf-8") as f:
             f.write(str(i))
     except Exception:
-        # не роняем процесс
         pass
 
 def rpc_result(req_id, result):
@@ -63,19 +61,18 @@ def rpc_result(req_id, result):
 def rpc_error(req_id, code, message):
     return {"jsonrpc": "2.0", "id": req_id, "error": {"code": code, "message": message}}
 
-# ====== Реализация наших «инструментов» ======
+# ====== Реализация инструментов ======
 
-def tool_get_next_task():
+def tool_get_next_step():
     steps, err = try_load_steps()
     if err is not None:
-        # Для tools/call вернём контент-текст с ошибкой, а прямой метод — JSON-RPC error
         return None, err
     idx = load_index()
     if idx < len(steps):
         return steps[idx], None
-    return None, None  # task=None => шагов больше нет
+    return None, None  # step=None => шагов больше нет
 
-def tool_mark_task_complete():
+def tool_mark_step_complete():
     steps, err = try_load_steps()
     if err is not None:
         return False, err
@@ -84,17 +81,16 @@ def tool_mark_task_complete():
         save_index(idx + 1)
     return True, None
 
-def tool_reset_tasks():
+def tool_reset_steps():
     """
-    Теперь всегда сбрасывает указатель на начало.
-    Возвращает (ok: bool, skipped: bool, err: str|None).
-    skipped теперь всегда False, потому что сброс всегда выполняется.
+    Всегда сбрасывает указатель на начало.
+    Возвращает (ok: bool, err: str|None).
     """
     steps, err = try_load_steps()
     if err is not None:
-        return False, False, err
+        return False, err
     save_index(0)
-    return True, False, None
+    return True, None
 
 # ====== Диспетчер MCP ======
 
@@ -103,26 +99,22 @@ def handle(req):
     method = req.get("method")
     params = req.get("params") or {}
 
-    # --- MCP base: initialize ---
-    # Клиент шлёт первым делом initialize; отвечаем версией протокола и возможностями.
-    # Протоколная дата-версия «2024-11-05» используется в примерах SDK и совместима с клиентами.
-    # См. также концепт-спеки MCP (initialize/tools/list/tools/call).
+    # initialize
     if method == "initialize":
         return rpc_result(req_id, {
             "protocolVersion": "2024-11-05",
-            "serverInfo": {"name": "task_orchestrator", "version": "1.1.0"},
+            "serverInfo": {"name": "step_orchestrator", "version": "1.1.0"},
             "capabilities": {
                 "tools": {}
             }
         })
 
-    # --- MCP tools/list ---
-    # Возвращаем список инструментов с inputSchema (JSON Schema объект).
+    # tools/list
     if method == "tools/list":
         return rpc_result(req_id, {
             "tools": [
                 {
-                    "name": "get_next_task",
+                    "name": "get_next_step",
                     "description": "Return the current step (one-line command) or null if finished.",
                     "inputSchema": {
                         "type": "object",
@@ -131,7 +123,7 @@ def handle(req):
                     }
                 },
                 {
-                    "name": "mark_task_complete",
+                    "name": "mark_step_complete",
                     "description": "Advance the step pointer by one.",
                     "inputSchema": {
                         "type": "object",
@@ -140,8 +132,8 @@ def handle(req):
                     }
                 },
                 {
-                    "name": "reset_tasks",
-                    "description": "Reset step pointer to the beginning ONLY if the sequence is finished.",
+                    "name": "reset_steps",
+                    "description": "Reset step pointer to the beginning.",
                     "inputSchema": {
                         "type": "object",
                         "properties": {},
@@ -151,67 +143,50 @@ def handle(req):
             ]
         })
 
-    # --- MCP tools/call ---
+    # tools/call
     if method == "tools/call":
         name = params.get("name")
-        # arguments = params.get("arguments") or {}  # сейчас без аргументов
 
-        if name == "get_next_task":
-            task, err = tool_get_next_task()
+        if name == "get_next_step":
+            step, err = tool_get_next_step()
             if err:
-                # В некоторых клиентах важно вернуть text-контент, иначе падают валидации.
-                return rpc_result(req_id, {
-                    "content": [{"type": "text", "text": ERR_STEPS}]
-                })
-            # task=None → всё завершено
-            payload = "null" if task is None else task
-            return rpc_result(req_id, {
-                "content": [{"type": "text", "text": payload}]
-            })
+                return rpc_result(req_id, {"content": [{"type": "text", "text": ERR_STEPS}]})
+            payload = "null" if step is None else step
+            return rpc_result(req_id, {"content": [{"type": "text", "text": payload}]})
 
-        if name == "mark_task_complete":
-            ok, err = tool_mark_task_complete()
+        if name == "mark_step_complete":
+            ok, err = tool_mark_step_complete()
             if err:
-                return rpc_result(req_id, {
-                    "content": [{"type": "text", "text": ERR_STEPS}]
-                })
-            return rpc_result(req_id, {
-                "content": [{"type": "text", "text": "ok"}]
-            })
+                return rpc_result(req_id, {"content": [{"type": "text", "text": ERR_STEPS}]})
+            return rpc_result(req_id, {"content": [{"type": "text", "text": "ok"}]})
 
-        if name == "reset_tasks":
-            ok, skipped, err = tool_reset_tasks()
+        if name == "reset_steps":
+            ok, err = tool_reset_steps()
             if err:
-                return rpc_result(req_id, {
-                    "content": [{"type": "text", "text": ERR_STEPS}]
-                })
-            text = "ok" if ok else "skipped"
-            return rpc_result(req_id, {
-                "content": [{"type": "text", "text": text}]
-            })
+                return rpc_result(req_id, {"content": [{"type": "text", "text": ERR_STEPS}]})
+            return rpc_result(req_id, {"content": [{"type": "text", "text": "ok"}]})
 
         return rpc_error(req_id, -32601, f"Tool not found: {name}")
 
-    # --- Поддержка прямых методов для ручного теста (необязательно для MCP) ---
-    if method == "get_next_task":
-        task, err = tool_get_next_task()
+    # Прямые методы (удобно для локальных тестов)
+    if method == "get_next_step":
+        step, err = tool_get_next_step()
         if err:
             return rpc_error(req_id, -32000, ERR_STEPS)
-        return rpc_result(req_id, {"task": task})
+        return rpc_result(req_id, {"step": step})
 
-    if method == "mark_task_complete":
-        ok, err = tool_mark_task_complete()
+    if method == "mark_step_complete":
+        ok, err = tool_mark_step_complete()
         if err:
             return rpc_error(req_id, -32000, ERR_STEPS)
         return rpc_result(req_id, {"status": "ok"})
 
-    if method == "reset_tasks":
-        ok, skipped, err = tool_reset_tasks()
+    if method == "reset_steps":
+        ok, err = tool_reset_steps()
         if err:
             return rpc_error(req_id, -32000, ERR_STEPS)
-        return rpc_result(req_id, {"status": "ok" if ok else "skipped"})
+        return rpc_result(req_id, {"status": "ok"})
 
-    # --- Неизвестный метод ---
     return rpc_error(req_id, -32601, f"Method not found: {method}")
 
 def main():

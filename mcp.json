@@ -1,20 +1,20 @@
 {
   "mcpServers": {
-    "task_orchestrator": {
+    "step_orchestrator": {
       "command": "docker",
       "args": [
         "exec",
         "-i",
         "task_orchestrator",
         "python",
-        "/app/task_orchestrator.py"
+        "/app/step_orchestrator.py"
       ],
       "alwaysAllow": [
-        "get_next_task",
-        "mark_task_complete",
-        "reset_tasks"
+        "get_next_step",
+        "mark_step_complete",
+        "reset_steps"
       ],
-      "description": "Containerized task orchestrator for sequential step management.",
+      "description": "Containerized step orchestrator for sequential step management.",
       "env": {
         "PYTHONUNBUFFERED": "1"
       }

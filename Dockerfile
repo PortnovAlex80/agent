@@ -9,7 +9,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Копируем исходники и тест
-COPY task_orchestrator.py steps.yaml test_steps.py ./
+COPY step_orchestrator.py steps.yaml test_steps.py ./
 
 # ✅ Запускаем тест с отображением логов в реальном времени
 # Используем "python3 -u" (unbuffered mode) чтобы вывод шел сразу
