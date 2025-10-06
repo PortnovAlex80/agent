@@ -100,7 +100,7 @@
 
   - name: "stage 8"
     steps:
-      - "изучи приложение, основные классы и dockerfile and start scripts. И заверши этот шаг mark_task_complet"
+      - "изучи приложение, основные классы и dockerfile and start scripts. И заверши этот шаг mark_step_complete"
       - "Добавь пустую БД PostgreSQL в docker-compose"
       - "Настрой инструмент миграций (Flyway, Alembic или Liquibase)"
       - "Создай первую пустую миграцию без таблиц"
@@ -113,7 +113,7 @@
 
   - name: "stage 9"
     steps:
-      - "изучи приложение, основные классы и dockerfile and start scripts. И заверши этот шаг mark_task_complet"
+      - "изучи приложение, основные классы и dockerfile and start scripts. И заверши этот шаг mark_step_complete"
       - "Создай миграцию V9__create_user_and_access_tables.sql"
       - "Создай таблицу user с полями: user_id (UUID PK), chat_id (TEXT UNIQUE), display_name, is_active"
       - "Создай таблицу user_object_access с PK (user_id, object_id) и полями is_allowed"
